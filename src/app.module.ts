@@ -18,7 +18,7 @@ import { TodoModuleModule } from './TodoModule/todomodule.module';
       password: '',
       database: 'nest',
       entities: [Todo],
-      synchronize: false,
+      synchronize: true,
       logging: true,
     })],
   controllers: [ AppController],
