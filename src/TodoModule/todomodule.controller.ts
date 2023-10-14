@@ -1,8 +1,10 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import { AddTodoDto } from './DTO/add-todo.dto';
 import { TodoService } from './todomodule.service';
 import { Todo } from './entities/todo.entity';
 import { UpdateTodoTdo } from './DTO/update-todo.dto';
+import { StatsEnum } from './Enums/StatsEnum';
+import { PaginatedTodoDto } from './DTO/paginated.dto';
 @Controller('todomodule')
 export class TodomoduleController {
     constructor(private todoservice : TodoService){
@@ -39,9 +41,22 @@ export class TodomoduleController {
     getAll(){
         return this.todoservice.getAllTodos();
     }
+    
+    @Get('/qb')
+    getAllQB( @Query('status') status: StatsEnum, @Query('data') data: string): Promise<Todo[]> {
+       const searchCriteria = {
+         status: status || '',
+         data: data || ''};
+            return this.todoservice.getAll(status,data);
+    }
+    @Get('/search')
+    getpaginated(@Query() mesQueryParams: PaginatedTodoDto){
+            return this.todoservice.getPaginated(mesQueryParams);
+    }
     @Get('/:id')
     getById(@Param('id') id: string){
         return this.todoservice.getById(id);
     }
+    
   }
 

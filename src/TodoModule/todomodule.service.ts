@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { StatsEnum } from './Enums/StatsEnum';
 import { UpdateTodoTdo } from './DTO/update-todo.dto';
+import { PaginatedTodoDto } from './DTO/paginated.dto';
 
 @Injectable() 
 export class TodoService { 
@@ -16,7 +17,7 @@ export class TodoService {
         private readonly todoRepo: Repository<Todo>,
     ){}
 
-    private todos: Array<Todo> = [];
+    private todo_array: Array<Todo> = [];
 
     addTodo(addTodo: AddTodoDto): Todo {
         const todo =new Todo();
@@ -24,7 +25,7 @@ export class TodoService {
         todo.name=addTodo.name;
         todo.description=addTodo.description;
         todo.status=StatsEnum.waiting;
-        this.todos.push(todo);
+        this.todo_array.push(todo);
         return todo;
       }
       addTodo_2(addTodo: AddTodoDto): Promise <Todo> {
@@ -77,9 +78,27 @@ export class TodoService {
          return this.todoRepo.find();
   }
   async getById(id: string) {
-    const todo = await this.todoRepo.findOne({ where: [{ id: id }] });
+    const todo = await this.todoRepo.findOne({ where: [{ id }] });
     if(!todo) throw new BadRequestException("Todo Not Found");
     return todo
 }
+  async getAll(status:StatsEnum, data:string){
+    const queryBuilder = this.todoRepo.createQueryBuilder("todo");
+    if(data) 
+      queryBuilder.where("todo.name Like :data", { data: `%${data}%` })
+        .orWhere("todo.description Like :data", { data: `%${data}%` })
+    if(status) queryBuilder.orWhere("todo.status= :statusParam", { statusParam: status });
+    
+    return await queryBuilder.getMany();
+  }
+
+  async getPaginated(data: PaginatedTodoDto){
+    return await this.todoRepo.find({
+      select:[],
+      skip:data.page ,
+      take:data.item
+    }
+    )
+  }
 
 }
