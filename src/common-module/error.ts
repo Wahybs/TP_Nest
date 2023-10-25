@@ -5,4 +5,8 @@ export const validationMessages = {
     maxLength: (field: string, length: number) =>
       `${field} ne doit pas dépasser ${length} caractères.`,
     required: (field: string) => `${field} est obligatoire.`,
+    IS_STRING: (field:string) => `${field} must be a string.`,
+    IS_EMAIL: () => ` must be a valid email address.`,
+   
   };
+  
