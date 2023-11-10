@@ -44,7 +44,7 @@ async function bootstrap() {
         
         const owner = users[randNumber({min: 0, max: users.length})];
         const randSkill = skills[randNumber({min: 0, max: skills.length})];
-        await cvService.create(cv, owner);
+        await cvService.createcv(cv, owner);
         await cvService.addSkill(cv.id, {skillId: randSkill.id});
     }
     await app.close()

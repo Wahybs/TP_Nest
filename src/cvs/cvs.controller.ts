@@ -10,7 +10,7 @@ export class CvsController {
 
   @Post()
   create(@Body() createCvDto: CreateCvDto, @Request() req: Request) {
-    return this.cvsService.create(createCvDto, req['user']);
+    return this.cvsService.createcv(createCvDto, req['user']);
   }
 
   @Get()

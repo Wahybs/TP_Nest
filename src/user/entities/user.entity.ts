@@ -21,6 +21,10 @@ export class UserEntity {
     })
     password: string;
 
+    @Column({
+        type: "varchar"
+    })
+    hash: string;
 
 
     @OneToMany(type => Cv, cv => cv.user, {eager: true})

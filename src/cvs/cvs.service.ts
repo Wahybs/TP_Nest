@@ -8,18 +8,21 @@ import { AddSkillCvDto } from './dto/add-skill-cv.dto';
 import { CreateCvDto } from './dto/create-cv.dto';
 import { UpdateCvDto } from './dto/update-cv.dto';
 import { Cv } from './entities/cv.entity';
+import { CrudService } from 'src/common-module/GenericCRUD';
 
 @Injectable()
-export class CvsService {
+export class CvsService extends CrudService<Cv>{
   constructor(
     @InjectRepository(Cv)
     private readonly cvRepository: Repository<Cv>,
 
     private readonly skillService: SkillsService,
-  ) {}
+  ) {
+    super(cvRepository);
+  }
 
-  create(createCvDto: CreateCvDto, user: UserEntity) {
-    const newCv = this.cvRepository.create(createCvDto)
+  async createcv(createCvDto: CreateCvDto, user: UserEntity) :Promise<Cv>{
+    const newCv = await this.cvRepository.create(createCvDto)
     newCv.user = user;
     return this.cvRepository.save(newCv);
   }
@@ -30,20 +33,8 @@ export class CvsService {
     cv.skills.push(skill)
     return this.cvRepository.save(cv);
   }
-
-  findAll() {
-    return this.cvRepository.find()
-  }
-
-  findOne(id: string) {
-    return this.cvRepository.findOneBy({id})
-  }
-
   update(id: string, updateCvDto: UpdateCvDto) {
     return this.cvRepository.update(id,updateCvDto)
   }
 
-  remove(id: string) {
-    return this.cvRepository.delete(id)
-  }
 }
